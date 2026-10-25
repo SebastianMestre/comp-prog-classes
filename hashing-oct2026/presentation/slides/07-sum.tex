@@ -1,0 +1,21 @@
+\begin{frame}{Sum hashing}
+  La misma idea, ahora con multiconjuntos.
+  Los \(r[i]\) son otra vez una tabla aleatoria.
+  \[
+    \begin{aligned}
+      h(\emptyset) &= 0 \\
+      h(\{i\}) &= r[i] \\
+      h(A + B) &= h(A) + h(B) \\
+      h(A \setminus B) &= h(A) - h(B)
+    \end{aligned}
+  \]
+  La resta corresponde a la diferencia cuando \(B\) está contenido en \(A\), contando repeticiones.
+
+  \medskip
+  \(h(\{a,a,b\}) = 2\,r[a] + r[b]\).
+
+  \vspace{0.6em}
+  {\footnotesize
+  Práctica: TC ARG 2024, día 7, problema F.\\
+  \url{https://codeforces.com/gym/104686/problem/F}}
+\end{frame}

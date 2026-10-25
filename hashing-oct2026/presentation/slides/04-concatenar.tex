@@ -1,0 +1,51 @@
+\begin{frame}{Concatenar}
+  De \((h(s), |s|)\) y \((h(t), |t|)\) sale el hash de \(st\), sin construir la string.
+  \[
+    h(st) = h(s) + h(t)\, b^{|s|}
+    \qquad
+    |st| = |s| + |t|
+  \]
+
+  \vspace{0.3em}
+  \begin{center}
+  \begin{tikzpicture}[font=\small]
+    \node[letter, fill=shared!12, minimum width=9mm] (s0) at (0,0) {\(s_0\)};
+    \node[letter, fill=shared!12, minimum width=9mm] (s1) at (1.05,0) {\(s_1\)};
+    \node[letter, fill=shared!12, minimum width=9mm] (s2) at (2.1,0) {\(s_2\)};
+    \node[letter, fill=tail!14, minimum width=9mm] (t0) at (3.45,0) {\(t_0\)};
+    \node[letter, fill=tail!14, minimum width=9mm] (t1) at (4.5,0) {\(t_1\)};
+    \node[font=\scriptsize, text=soft] at (0,-0.62) {\(b^{0}\)};
+    \node[font=\scriptsize, text=soft] at (1.05,-0.62) {\(b^{1}\)};
+    \node[font=\scriptsize, text=soft] at (2.1,-0.62) {\(b^{2}\)};
+    \node[font=\scriptsize, text=soft] at (3.45,-0.62) {\(b^{\textcolor{red}{3}}\)};
+    \node[font=\scriptsize, text=soft] at (4.5,-0.62) {\(b^{4}\)};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}, shared, thick]
+      ($(s0.south west)+(-0.02,-0.95)$) -- ($(s2.south east)+(0.02,-0.95)$)
+      node[midway, below=7pt, text=black, font=\small] {\(|s| = \textcolor{red}{3}\)};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}, tail, thick]
+      ($(t0.south west)+(-0.02,-0.95)$) -- ($(t1.south east)+(0.02,-0.95)$)
+      node[midway, below=7pt, text=black, font=\small] {\(t\)};
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{El par \((h, \text{largo})\)}
+  Para igualdad y concatenación, el par hace de string.
+
+  \medskip
+  \begin{itemize}
+    \item Igualdad: se comparan los dos números, en \(O(1)\).
+    \item Concatenación: la cuenta de arriba, en \(O(1)\).
+  \end{itemize}
+
+  \medskip
+  Esta representación de la string no permite leer un caracter.
+
+  \medskip
+  La idea es más general: se puede construir una representación que reemplace al objeto, y operar sobre esa representación.
+
+  \vspace{0.55em}
+  {\footnotesize
+  TAP 2019, problema H, Rummaging.\\
+  \url{https://codeforces.com/group/YjFmW2O15Q/contest/102363/problem/H}}
+\end{frame}

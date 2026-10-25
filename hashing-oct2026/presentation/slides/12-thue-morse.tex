@@ -1,0 +1,85 @@
+\appendix
+\section{Apéndice: Thue-Morse}
+
+\begin{frame}
+  \vspace{1.5cm}
+  \centering
+  {\LARGE Apéndice: Thue-Morse}
+\end{frame}
+
+\begin{frame}{Thue-Morse}
+  \(\tau_0 = 0\).
+  Cada término es el anterior, seguido de su complemento.
+
+  \vspace{0.7em}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{@{}r@{\quad}l@{}}
+    \(\tau_1\) & \textcolor{shared}{\texttt{0}}\hspace{0.45em}\textcolor{tail}{\texttt{1}} \\
+    \(\tau_2\) & \textcolor{shared}{\texttt{01}}\hspace{0.45em}\textcolor{tail}{\texttt{10}} \\
+    \(\tau_3\) & \textcolor{shared}{\texttt{0110}}\hspace{0.45em}\textcolor{tail}{\texttt{1001}} \\
+    \(\tau_4\) & \textcolor{shared}{\texttt{01101001}}\hspace{0.45em}\textcolor{tail}{\texttt{10010110}}
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.6em}
+  {\color{shared}\rule{0.7em}{0.7em}} la primera mitad, que es \(\tau_{i-1}\)
+  \qquad
+  {\color{tail}\rule{0.7em}{0.7em}} su complemento
+\end{frame}
+
+\begin{frame}{Por qué colisionan}
+  \(W\) es el hash polinomial sin tomar módulo.
+  La segunda mitad de \(\tau_n\) es el complemento de la primera, así que
+  \[
+    W(\overline{\tau_n}) - W(\tau_n)
+      = \prod_{i=0}^{n-1} \bigl(1 - b^{2^{i}}\bigr).
+  \]
+
+  Si \(b^{2^{k}} \equiv 1 \pmod{M}\) para algún \(k < n\), ese factor es \(0\) módulo \(M\).
+  Los dos hashes coinciden. El módulo puede ser cualquiera.
+
+  \medskip
+  Si \(M = 2^{64}\) y \(b\) es impar, cada factor aporta potencias de \(2\):
+  \(2^{i+1}\) divide a \(1 - b^{2^{i}}\), y el producto junta al menos \(n(n+1)/2\) factores \(2\).
+  Con \(n = 11\) eso pasa de \(64\).
+  \(\tau_{11}\) y su complemento, de largo \(2048\), colisionan para cualquier base impar.
+\end{frame}
+
+\begin{frame}{Un ejemplo}
+  Base \(b = 3\), módulo \(2^{10} = 1024\), con \(n = 4\).
+
+  \begin{center}
+  \texttt{0110 1001 1001 0110}\\[0.25em]
+  \texttt{1001 0110 0110 1001}\\[0.7em]
+  Los dos hashes valen \(464\).
+  \end{center}
+
+  \vspace{0.45em}
+  Otro módulo, que no es potencia de \(2\): base \(b = 4\), módulo \(15\).
+  Como \(4^{2} \equiv 1 \pmod{15}\), \(\tau_2 = \texttt{0110}\) y su complemento \(\texttt{1001}\) tienen hash \(5\).
+\end{frame}
+
+\begin{frame}[fragile]{Cómo generarlas}
+\begin{lstlisting}
+vector<int> thue(int n) {
+    vector<int> s = {0};
+    for (int k = 0; k < n; k++) {
+        int m = (int) s.size();
+        for (int i = 0; i < m; i++)
+            s.push_back(1 - s[i]);
+    }
+    return s;
+}
+
+uint64_t H(vector<int> const& s, uint64_t b, uint64_t mod) {
+    uint64_t h = 0, p = 1;
+    for (int x : s) {
+        h = (h + (uint64_t) x * p) % mod;
+        p = p * b % mod;
+    }
+    return h;
+}
+// H(thue(4), 3, 1024) y el hash del complemento valen 464
+\end{lstlisting}
+\end{frame}

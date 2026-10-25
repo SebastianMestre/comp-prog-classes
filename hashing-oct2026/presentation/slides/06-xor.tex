@@ -1,0 +1,49 @@
+\section{Hashing de conjuntos}
+
+\begin{frame}
+  \vspace{1.5cm}
+  \centering
+  {\LARGE Hashing de conjuntos}
+\end{frame}
+
+\begin{frame}{XOR hashing}
+  Conjuntos de \(\{0,\ldots,n-1\}\).
+  Los \(r[i]\) son números aleatorios, elegidos una vez.
+  \[
+    \begin{aligned}
+      h(\emptyset) &= 0 \\
+      h(\{i\}) &= r[i] \\
+      h(A \triangle B) &= h(A) \oplus h(B)
+    \end{aligned}
+  \]
+
+  \vspace{-0.4em}
+  \[
+    \begin{aligned}
+      h(\{a,b,c\})
+        &= h(\{a\} \triangle \{b\} \triangle \{c\}) \\
+        &= r[a] \oplus r[b] \oplus r[c]
+    \end{aligned}
+  \]
+
+  Asociativa, conmutativa, con neutro \(0\).
+  Cada conjunto es su inverso: \(h(A) \oplus h(A) = 0\).
+\end{frame}
+
+\begin{frame}{Insertar y borrar}
+  Como \(r[i] \oplus r[i] = 0\), agregar y sacar son la misma cuenta.
+
+  \medskip
+  Agregar \(i\), sabiendo que no está:
+  \[
+    h \leftarrow h \oplus r[i]
+  \]
+  Sacar \(i\), sabiendo que está:
+  \[
+    h \leftarrow h \oplus r[i]
+  \]
+
+  \medskip
+  Si \(i\) ya estaba y se agrega, el XOR lo saca.
+  El hash no dice si \(i\) pertenece al conjunto.
+\end{frame}

@@ -1,0 +1,18 @@
+\section{Hash polinomial}
+
+\begin{frame}{Hash polinomial}
+  Cada caracter es un entero entre \(1\) y \(|\Sigma|\).
+  Si el \(0\) fuera un caracter, las strings \(0\), \(00\), \(000\) tendrían todas hash \(0\).
+  Elegimos un entero \(b > |\Sigma|\) y un primo \(p\) grande.
+  \[
+    h(s) = \sum_{i=0}^{n-1} s[i]\, b^{i} \pmod{p},
+    \qquad n = |s|.
+  \]
+
+  \medskip
+  Si \(h(s_1) = h(s_2)\), tratamos a \(s_1\) y \(s_2\) como iguales.
+
+  \medskip
+  Cuando \(s_1 = s_2\), los hashes coinciden.
+  Cuando \(s_1 \neq s_2\), coinciden muy pocas veces.
+\end{frame}

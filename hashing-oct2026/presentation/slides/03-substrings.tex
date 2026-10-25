@@ -1,0 +1,31 @@
+\newcommand{\Hshared}{s[l]\,b^{0} + s[l+1]\,b^{1} + \cdots + s[r-1]\,b^{r-l-1}}
+\newcommand{\Htail}{s[r]\,b^{r-l} + s[r+1]\,b^{r-l+1} + \cdots}
+
+\begin{frame}{Substrings en \(O(1)\)}
+  \framesubtitle{\([l,r)\) no incluye el extremo derecho}
+
+  Muchos problemas piden comparar substrings de una misma string grande.
+
+  \newsavebox{\sharedbox}
+  \newsavebox{\tailbox}
+  \sbox{\sharedbox}{\footnotesize\textcolor{shared}{$\Hshared$}}
+  \sbox{\tailbox}{\footnotesize\textcolor{tail}{$\Htail$}}
+
+  \begin{center}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.45}
+  \begin{tabular}{@{}r@{\ }c@{\ }l@{}}
+    \(h(s[l,r))\) & \(=\) & \usebox{\sharedbox} \\
+    \(h(s[l,n))\) & \(=\) & \usebox{\sharedbox}\;\(+\)\;\usebox{\tailbox} \\
+    \(h(s[r,n))\,b^{r-l}\) & \(=\) &
+      \makebox[\wd\sharedbox]{}\;\(+\)\;\usebox{\tailbox}
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.6em}
+  \[
+    \textcolor{shared}{h(s[l,r))} = h(s[l,n)) - \textcolor{tail}{h(s[r,n))\, b^{r-l}}
+  \]
+
+  Con \(h(s[i,n))\) y \(b^{i}\) ya calculados, para todo \(i\), cada substring sale en \(O(1)\).
+\end{frame}

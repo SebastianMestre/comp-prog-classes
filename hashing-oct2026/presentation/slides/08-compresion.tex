@@ -1,0 +1,82 @@
+\section{Hashing con orden}
+
+\begin{frame}
+  \vspace{1.5cm}
+  \centering
+  {\LARGE Hashing con orden}
+\end{frame}
+
+\begin{frame}{Comprimir}
+  Hay que hacer \(N^{2}\) comparaciones entre \(N\) strings, con \(N = 2000\) y cada string de largo \(2000\).
+
+  \medskip
+  Se ordenan una vez. Cada string pasa a ser su índice en ese orden, y comparar es comparar enteros.
+
+  \vspace{0.7em}
+  \begin{center}
+  \begin{tikzpicture}[font=\small]
+    \foreach \n/\x/\word/\id in {a/0/zorro/2, b/2.3/gato/0, c/4.6/perro/1, d/6.9/gato/0} {
+      \node (\n) at (\x,0) {\texttt{\word}};
+      \node[circle, draw=shared, thick, fill=shared!10, minimum size=7mm, inner sep=0pt] (i\n) at (\x,-1.35) {\id};
+      \draw[e] (\n) -- (i\n);
+    }
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.2em}
+  Orden de los distintos: \texttt{gato}, \texttt{perro}, \texttt{zorro}.
+  Eso es comprimir: ordenar, borrar repetidos, reemplazar por el índice.
+\end{frame}
+
+\begin{frame}{Concatenar ids}
+  \(A\) son strings de largo \(3\), \(B\) de largo \(2\).
+  Los ids conservan el orden adentro de cada conjunto.
+
+  \vspace{0.45em}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \centering
+      \begin{tabular}{@{}l@{\ \ }c@{\ \ }c@{}}
+        \(A\) & \texttt{gat} & \texttt{perr} \\
+            & \(0\) & \(1\) \\[0.45em]
+        \(B\) & \texttt{as} & \texttt{os} \\
+            & \(0\) & \(1\)
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \centering
+      \renewcommand{\arraystretch}{1.15}
+      \begin{tabular}{@{}c@{\quad}l@{\quad}c@{}}
+        par & concatenación & id \\
+        \((0,0)\) & \texttt{gatas} & \(0\) \\
+        \((0,1)\) & \texttt{gatos} & \(1\) \\
+        \((1,0)\) & \texttt{perras} & \(2\) \\
+        \((1,1)\) & \texttt{perros} & \(3\)
+      \end{tabular}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.55em}
+  El orden de los pares es el orden de las concatenaciones.
+  Esos pares se comprimen, y los ids nuevos quedan ordenados como las strings \(ab\).
+\end{frame}
+
+\begin{frame}{Concatenar ids}
+  El corte entre las dos partes tiene que caer siempre en el mismo lugar.
+  Si los largos de \(A\) no son todos iguales, o los de \(B\), el par deja de representar a la concatenación.
+
+  \vspace{0.6em}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{@{}l@{\quad}c@{\quad}c@{\quad}l@{}}
+    \texttt{a} \(\to 0\), \texttt{ab} \(\to 1\) &
+      \texttt{a}+\texttt{bc} & \texttt{abc} & par \((0,0)\) \\
+    \texttt{bc} \(\to 0\), \texttt{c} \(\to 1\) &
+      \texttt{ab}+\texttt{c} & \texttt{abc} & par \((1,1)\)
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.45em}
+  Las dos concatenaciones son la misma string.
+  Los pares no, y al comprimirles salen ids distintos.
+\end{frame}

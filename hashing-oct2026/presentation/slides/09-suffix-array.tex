@@ -1,0 +1,89 @@
+\begin{frame}{Suffix array}
+  Dada una string de largo \(n\), imprimir los índices donde empiezan sus sufijos, en orden lexicográfico.
+
+  \vspace{0.6em}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \centering
+      \renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{@{}c@{\quad}l@{}}
+        índice & sufijo \\
+        \(0\) & \texttt{caba} \\
+        \(1\) & \texttt{aba} \\
+        \(2\) & \texttt{ba} \\
+        \(3\) & \texttt{a}
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      Orden:\\[0.3em]
+      \texttt{a}, \texttt{aba}, \texttt{ba}, \texttt{caba}\\[0.7em]
+      Resultado: \(3\ 1\ 2\ 0\)
+    \end{column}
+  \end{columns}
+
+  \vspace{0.8em}
+  {\footnotesize \url{https://judge.yosupo.jp/problem/suffixarray}}
+\end{frame}
+
+\begin{frame}{Suffix array}
+  Se arman ids para los substrings de largo 1.
+  Esos se concatenan y se comprimen: salen los ids de largo 2, después los de largo 4, y así.
+
+  \medskip
+  Antes se agrega padding al final, para que los pares no se salgan de la string.
+
+  \vspace{0.35em}
+  \begin{center}
+  \begin{tikzpicture}[x=11mm, y=7.4mm]
+    \node[anchor=east, font=\small] at (-0.75,0) {letra};
+    \node[anchor=east, font=\small] at (-0.75,-1.05) {id};
+    \foreach \i/\ch in {0/c, 1/a, 2/b, 3/a} {
+      \node[letter] at (\i,0) {\ch};
+    }
+    \foreach \i in {4,5,6} {
+      \node[filler] at (\i,0) {\(\varepsilon\)};
+    }
+    \foreach \i/\id in {0/3, 1/1, 2/2, 3/1, 4/0, 5/0, 6/0} {
+      \node[font=\small] at (\i,-1.05) {\id};
+    }
+
+    \node[anchor=east, font=\small] at (-0.75,-2.25) {par};
+    \node[anchor=east, font=\small] at (-0.75,-3.35) {id};
+    \foreach \i/\txt in {0/ca, 1/ab, 2/ba} {
+      \node[letter, minimum width=9.6mm] at (\i+0.5,-2.25) {\txt};
+    }
+    \foreach \i/\txt in {3/{a\(\varepsilon\)}, 4/{\(\varepsilon\varepsilon\)}, 5/{\(\varepsilon\varepsilon\)}} {
+      \node[filler, minimum width=9.6mm] at (\i+0.5,-2.25) {\txt};
+    }
+    \foreach \i/\id in {0/4, 1/2, 2/3, 3/1, 4/0, 5/0} {
+      \node[font=\small] at (\i+0.5,-3.35) {\id};
+    }
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Suffix array}
+  \(N\) es el largo de la string con el padding.
+
+  \medskip
+  \begin{center}
+  \renewcommand{\arraystretch}{1.22}
+  {\ttfamily
+  \begin{tabular}{@{}l@{}}
+    ids \(\leftarrow\) comprimir los caracteres \\
+    \(l \leftarrow 1\) \\
+    mientras \(l < n\): \\
+    \quad par \(\leftarrow [(ids[i], ids[i+l])\) for \(i = 0\,..\!\!<\,N-2l+1]\) \\
+    \quad ids \(\leftarrow\) comprimir par \\
+    \quad \(l \leftarrow 2l\)
+  \end{tabular}}
+  \end{center}
+
+  \vspace{0.55em}
+  Al terminar, el sufijo que empieza en \(i\) queda en la posición \(\mathrm{ids}[i]\).
+  El arreglo que hay que imprimir es la inversa: \(\mathrm{SA}[\mathrm{ids}[i]] = i\).
+
+  \medskip
+  En \texttt{caba}, después de la vuelta \(l = 2\), los ids son \(3,1,2,0\).
+  La inversa es \(3\ 1\ 2\ 0\).
+\end{frame}

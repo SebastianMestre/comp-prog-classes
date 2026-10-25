@@ -1,0 +1,77 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,babel,decorations.pathreplacing}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{shared}{RGB}{0,102,128}
+\definecolor{tail}{RGB}{176,78,0}
+\definecolor{soft}{RGB}{70,80,90}
+\definecolor{panel}{RGB}{236,242,245}
+
+\lstdefinestyle{customc}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegray}\itshape,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  keepspaces=true,
+  numbers=left,
+  numbersep=6pt,
+  showstringspaces=false,
+  tabsize=4,
+  frame=single,
+  language=C++,
+  columns=fullflexible,
+  xleftmargin=1.4em,
+  framexleftmargin=1.2em
+}
+\lstset{style=customc}
+
+\usetheme{Madrid}
+\setbeamertemplate{navigation symbols}{}
+
+\tikzset{
+  v/.style={circle, draw=shared, very thick, fill=white, minimum size=7.4mm, inner sep=0pt, font=\small},
+  e/.style={-{Stealth[length=2.2mm]}, very thick, draw=soft},
+  uline/.style={very thick, draw=soft},
+  cell/.style={draw=soft!70, minimum width=8.4mm, minimum height=7mm, inner sep=1pt, font=\ttfamily, anchor=center},
+  filler/.style={cell, fill=panel, text=soft},
+  letter/.style={cell, fill=white}
+}
+
+\title{Hashing}
+\author{Sebastian Mestre}
+\date{Octubre 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\input{slides/01-definicion}
+\input{slides/02-definicion}
+\input{slides/03-substrings}
+\input{slides/04-concatenar}
+\input{slides/05-colisiones}
+\input{slides/06-xor}
+\input{slides/07-sum}
+\input{slides/08-compresion}
+\input{slides/09-suffix-array}
+\input{slides/10-problemas}
+\input{slides/13-gracias}
+\input{slides/12-thue-morse}
+\input{slides/11-abc}
+
+\end{document}

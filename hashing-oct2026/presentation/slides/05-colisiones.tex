@@ -1,0 +1,35 @@
+\begin{frame}{Cuántas colisiones}
+  Modelamos cada hash como un número uniforme entre \(0\) y \(2^{64}-1\).
+  Dos elementos distintos colisionan con probabilidad \(2^{-64}\).
+
+  \medskip
+  Sea \(X\) la cantidad de colisiones entre \(N\) elementos.
+  Por linealidad de la esperanza:
+  \[
+    \mathbb{E}[X] = \binom{N}{2}\, 2^{-64}.
+  \]
+  \(X\) es un entero no negativo, así que \(\mathrm{P}(X \neq 0) \le \mathbb{E}[X]\).
+
+  \medskip
+  Para \(N = 10^{6}\),
+  \[
+    \mathrm{P}(X \neq 0)
+      \le \binom{10^{6}}{2}\, 2^{-64}
+      \approx 2.71 \times 10^{-8}.
+  \]
+\end{frame}
+
+\begin{frame}{Bases y módulos}
+  Para una base y un módulo fijos se pueden armar strings con muchas colisiones.
+  Ese caso de prueba tiene que estar construido para esa base.
+
+  \medskip
+  En Latam eso casi no aparece.
+  Una base grande, elegida al azar, corta los tests que necesitan conocer \(b\).
+
+  \medskip
+  Thue-Morse colisiona módulo \(M\) cuando \(b^{2^{k}} \equiv 1 \pmod{M}\) para algún \(k\).
+  El módulo no tiene que ser una potencia de \(2\).
+  Si es \(2^{64}\) y la base es impar, colisiona igual.
+  La vemos al final.
+\end{frame}

@@ -1,0 +1,59 @@
+\section{Apéndice: solución al ABC 481 F}
+
+\begin{frame}
+  \vspace{1.5cm}
+  \centering
+  {\LARGE Apéndice: solución al ABC 481 F}
+\end{frame}
+
+\begin{frame}{El orden de los costos}
+  Un camino con más aristas tiene más dígitos.
+  Con dígitos del 1 al 9, ese número es mayor.
+  Repetir un nodo agrega dígitos, así que no mejora el mínimo.
+
+  \medskip
+  Entre dos caminos con la misma cantidad de aristas, el menor número es el menor en orden lexicográfico.
+
+  \medskip
+  Alcanza con buscar el camino lexicográficamente menor entre los de longitud mínima.
+\end{frame}
+
+\begin{frame}{Capa por capa}
+  El nodo 1 empieza con la string vacía, id \(0\).
+  En la capa \(k\) se extienden los caminos de la capa \(k-1\) con una arista, y cada nodo se queda con el menor par \((\mathrm{id}, d)\).
+  Esos pares ganadores se comprimen, y los ids nuevos se usan en la capa siguiente.
+
+  \vspace{0.45em}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{0.34\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.86]
+        \node[v] (a) at (0,0) {\(1\)};
+        \node[v] (b) at (-1.35,-1.45) {\(2\)};
+        \node[v] (c) at (1.35,-1.45) {\(3\)};
+        \node[v] (d) at (0,-2.9) {\(4\)};
+        \draw[e] (a) -- node[pos=0.42, above left=0pt, font=\scriptsize, fill=white, inner sep=1.5pt] {1} (b);
+        \draw[e] (a) -- node[pos=0.42, above right=0pt, font=\scriptsize, fill=white, inner sep=1.5pt] {1} (c);
+        \draw[e] (b) -- node[pos=0.58, left=0pt, font=\scriptsize, fill=white, inner sep=1.5pt] {9} (d);
+        \draw[e] (c) -- node[pos=0.58, right=0pt, font=\scriptsize, fill=white, inner sep=1.5pt] {2} (d);
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.64\textwidth}
+      \footnotesize
+      Capa 1. Desde 1 llegan a 2 y a 3 el par \((0,1)\).\\
+      Costo \(1\). Los dos quedan con id \(0\).
+
+      \medskip
+      Capa 2. Hacia 4:
+      \begin{center}
+      \renewcommand{\arraystretch}{1.12}
+      \begin{tabular}{@{}l@{\quad}c@{\quad}c@{}}
+        desde & par & costo \\
+        2, dígito 9 & \((0,9)\) & \(19\) \\
+        3, dígito 2 & \((0,2)\) & \(12\)
+      \end{tabular}
+      \end{center}
+      Gana \((0,2)\). El nodo 4 se queda con \(12\).
+    \end{column}
+  \end{columns}
+\end{frame}

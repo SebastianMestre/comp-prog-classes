@@ -1,0 +1,373 @@
+==== introduccion =============================================================
+
+idea basica de resumir una string / estructura cualquiera a un solo numero de
+tamaño fijo
+
+-> comparación en O(1)
+-> usarlo como índice en un array o diccionario
+-> operar directo sobre hashes "homomorfismos"
+
+==== hashing polinomial / calculo O(1) con tablita aditiva ====================
+
+Consideremos un alfabeto Sigma, un numero b > #Sigma, y un primo "grande" p.
+
+Podemos definir la funcion
+
+    h(s) = s[0]*b^0 + ... + s[n-1]*b^(n-1) 
+      donde n = |s|
+
+Si tomamos dos strings aleatorias distintas s1 y s2, la probabilidad de que
+h(s1) = h(s2) es muy baja.
+
+Imaginate que en un programa decidimos:
+
+    si  h(s1) = h(s2)  entonces yo me creo que  s1 = s2
+
+La probabilidad de acertar es muy alta.
+
+En particular dos strings iguales siempre se deciden iguales, y dos strings
+distintas "casi siempre" se deciden distintas.
+
+---- hashes de substrings -----------------------------------------------------
+
+En muchos problemas nos piden comparar pedazos de la misma string.
+
+Para esto podemos aprovechar la forma particular que tiene la cuenta de h(s)
+para calcular h(s[l..r]) en O(1), con un precalculo O(N)
+
+Fijate que h(s[l..r]) comparte muchos terminos con h(s[l..n])
+
+    h(s[l..r]) = s[l]*b^0 + s[l+1]*b^1 + ... + s[r-1]*b^(r-l-1)
+    h(s[l..n]) = s[l]*b^0 + s[l+1]*b^1 + ... + s[r-1]*b^(r-l-1) + s[r]*b^(r-l) + s[r+1]*b^(r-l+1) + ...
+
+La parte que no tienen en comun se parece mucho a h(s[r..n]). En particular,
+es exactamente h(s[r..n])*b^(r-l).
+
+Por lo tanto tenemos la identidad:
+
+    h(s[l..r]) = h(s[l..n]) - h(s[r..n]) * b^(r-l)
+
+Esto nos permite calcular cualquier h(s[l..r]) si tenemos precalculado
+h(s[i..n]) y b^i para todo i de 0 a n
+
+> agente: en la presentacion incluir una diapo que su cosa principal sean las expresiones de h(s[l..r]), h(s[l..n]) y h(s[r..n])*b^(r-l) en tres renglones, con sus terminos compartidos bien alineados y con colores mostrando las dos partes distintas
+
+
+---- concatenar hashes / idea general de morfismo de hash ---------------------
+
+notar que si tenes `s`, `t` strings y `h(-)` hash polinomial de base `b`
+
+dado
+
+    (h(s), len(s))
+    (h(t), len(t))
+
+calculamos
+
+    h(st) = h(s) + h(t) * b^(len(s))
+    len(st) = len(s) + len(t)
+
+o sea sin construir la concatenacion igual podemos conseguir el hash de la
+concatenacion
+  
+podemos imaginarnos en nuestra cabeza que el par (h, len) es una estructura de
+datos que almacena strings y permite concatenar y comparar igualdad en O(1),
+pero no permite por ejemplo, acceder a los caracteres
+
+Esto es un modelo mental util en general: que el hash simula ser el objeto en
+si. Muchos problemas se resuelven pensando como simular las operaciones del
+problema sobre hashes.
+
+---- probabilidad de colisión -------------------------------------------------
+
+Normalmente si una funcion de hash tiene dominio en 1..n, suponemos que los
+hashes se comportan como valores aleatorios e uniformes en ese intervalo.
+Entonces, la probabilidad de que los hashes de dos strings distintas colisionen
+(sean iguales) es 1/n.
+
+Esto no es del todo cierto. Para elecciones particulares de base y modulo, hay
+construcciones de strings cuyos substrings tienen muchas colisiones.
+
+(Leer sobre la secuencia de Thue-Morse)
+
+En la practica los problemsetters en Latam no ponen esto en los casos de prueba
+y de todas formas los casos se tienen que construir especificamente para la
+base que uses en el polinomio, igual por las dudas nos podemos defender
+eligiendo una base grande aleatoria (ver codigo en `la-pandilla`).
+
+Modelemos que el hash de un elemento arbitrario es un numero elegido
+uniformemente entre 0 y 2^64-1, la probabilidad de colision entre un par de
+elementos es 2^-64.
+
+Ahora considero la variable aleatoria
+
+    X = numero de colisiones entre N elementos
+
+Por linealidad de la esperanza, E(X) es simplemente (N choose 2) * 2^-64
+
+Aparte, por ser una variable con valores en los numeros naturales,
+
+    P(X =/= 0) <= E(X)
+
+Entonces
+
+    P(hay colisiones) = P(X =/= 0) <= (N choose 2) * 2^-64
+
+Por ejemplo, para N=10^6 tenemos:
+
+    P(hay colisiones) <= 2.7 * 10^-8
+
+==== hashing de conjuntos =====================================================
+
+primero XOR hashing
+
+ponele que queremos trabajar conjuntos de enteros en 0...n-1
+
+a cada conjunto unitario {i} le asignamos un hash aleatorio h({i}) = r[i]
+(literalmente inicializamos un array de numeros aleatorios)
+
+dados los hashes de dos conjuntos A y B, definimos el hash de su diferencia
+simetrica mediante
+
+    h({}) = 0
+    h({i}) = r[i]
+    h(A ^ B) = h(A) xor h(B)
+
+ejemplo
+  
+      h({a,b,c})
+    = h({a} ^ {b} ^ {c})
+    = h({a}) xor h({b}) xor h({c})
+    = r[a] xor r[b] xor r[c]
+
+esto efectivamente se "comporta bien" en el sentido de que cumple todas las
+propiedades de la diferencia simetrica (asociativo, conmutativo, tiene neutro,
+cada elemento es su propio inverso)
+
+aparte, tiene buenas propiedades estadisticas respecto a las colisiones
+
+si tenemos cuidado, podemos usar esto para simular operaciones de insertar y
+eliminar elementos (o sea hay que asegurarse de solo insertar elementos que no
+están y eliminar elementos que sí)
+
+notar que esta representacion de conjunto no tiene forma de chequear si un
+elemento pertenece al conjunto
+
+---- ahora su primo un poco menos comun, SUM hashing --------------------------
+
+trabajamos multiconjuntos en 0...n-1
+asignamos numeros aleatorios para los unitarios
+podemos simular suma y diferencia de multiconjuntos sumando y restando hashes
+
+  h({}) = 0
+  h({i}) = r[i]                  (tabla aleatoria, igual que antes)
+  h(A + B) = h(A) + h(B)
+  h(A \ B) = h(A) - h(B)         (si B \in A)
+
+ojo de solo hacer A\B si sabemos que B es subconjunto de A
+
+Practica:
+https://codeforces.com/gym/104686/problem/F    (TC ARG 2024, dia 7, problema F)
+
+==== compresión de coordenadas / "hash" que preserva orden ====================
+
+ponele que queremos trabajar con algun conjunto fijo de elementos y poder
+rapido comparar cual es menor segun un orden.
+
+por ejemplo, tenemos un problema cuya solucion requiere hacer N^2 comparaciones
+entre N strings. N = 2000 y |s[i]| = 2000.
+
+podemos ordenar las strings y reemplazarlas por su indice en el orden. Ahora
+podemos comparar en O(1).
+
+---- concatenacion ------------------------------------------------------------
+
+Hasta ahi es simple compresion de coordenadas, pero tambien podemos aplicar la
+idea de que los hashes "simulan" operaciones sobre el objeto que representan.
+
+Imaginate que tenemos un conjunto A de strings de longitud n, y otro conjunto B
+de strings de longitud m
+
+Ahora, con algunos pares (a, b) \in A x B, vamos a construir el conjunto C, con
+las concatenaciones ab.
+
+Para construir los ids correspondientes hacemos todos los pares
+(id_A[a], id_B[b]), los ordenamos y comprimimos.
+
+Asi obtenemos un conjunto de identificadores en C, que preservan el orden.
+
+Esto funciona porque los pares (a,b) tienen el mismo orden que las
+concatenaciones ab.
+
+> ojo que se rompe si las longitudes de las strings en A y B no son todas
+  iguales. Por ejemplo A = { a, ab } y B = { bc, c }, este algoritmo
+  le asignaria distintos IDs a la concatenacion "a"+"bc" y "ab"+"c".
+
+---- problema: https://judge.yosupo.jp/problem/suffixarray --------------------
+
+Nos dan un string de longitud N. Si ordenaramos sus sufijos lexicograficamente,
+en que orden quedarian? Imprimir para cada posicion i de ese orden, el indice
+inicial del sufijo que queda en posicion i
+
+ejemplo:
+    baa
+sufijos:
+    0 -> baa
+    1 -> aa
+    2 -> a
+ordenado:
+    a (2), aa (1), baa (0)
+resultado:
+    2 1 0
+
+combinando la idea de concatenar y comprimir con binary lifting podemos lograr
+un algoritmo para ordenar todos los sufijos de una string.
+
+Primero asignamos ids a todos los substrings de longitud 1, en orden
+alfabetico.
+
+Despues podemos concatenar todos los que aparecen consecutivos para obtener
+todos los substrings de longitud 2.
+
+Despues repetimos para obtener los de longitud 4, 8, 16, etc. En log(N)
+iteraciones tenemos substrings de longitud >= N.
+
+Hay que tener ojo con los strings que se salen del rango de la string original.
+
+Una forma de manejarlo es rellenar la string con '\0' (ya sea fisicamente
+agregandolos o simulando ese comportamiento en el algoritmo).
+
+    vector<int> suffix_array(string s) {
+
+        int const n = sz(s);
+
+        int l = 1;
+        while (l < n) l *= 2;
+
+        int const N = n-1+l;
+        s.resize(N, '\0');
+
+        // invariante: compressed representa strings de longitud l
+        vector<int> compressed = compress(all(s));
+
+        l = 1;
+
+        while (l < n) {
+
+            int n_ = N - l*2 + 1;
+
+            vector<pii> items(n_);
+            forn(i, n_) items[i] = {compressed[i], compressed[i+l]};
+
+            compressed = compress(all(items));
+            l *= 2;
+        }
+
+        vector<int> result(n);
+        forn(i, n) result[compressed[i]] = i;
+
+        return result;
+    }
+
+==== Problemas para pensar ====================================================
+
+- Te dan dos arboles y tenes que responder si son isomorfos.
+
+  Pista: no es realmente necesario usar hashing, pero hacerlo con sum-hashing
+  simplifica un poco la implementacion
+
+- https://atcoder.jp/contests/abc481/tasks/abc481_f
+
+  Te dan un grafo de N nodos y M aristas dirigidas, con digitos en cada
+  arista.
+  
+  Llamamos costo de un camino a la concatenacion de los digitos de las aristas,
+  interpretado como numero.
+  
+  Encontrar los costos para ir del nodo 1 a cada nodo, todos expresados en modulo
+  998244353.
+
+- Te dan un arbol de N nodos, con caracteres en las aristas y Q consultas
+  (u1,v1, u2,v2). Por cada consulta responder si la string formada por el
+  camino u1--v1 es igual a la del camino u2--v2.
+
+- Mismo problema pero aparte si son distintas, decir cual es menor
+  lexicograficamente.
+
+==== Apendice: Thue-Morse ======================================================
+
+> agente: busca informacion sobre como construir colisiones a polynomial hashing usando thue-morse. pone una explicacion de como se genera la secuencia y por que genera muchas colisiones. inclui un ejemplo particular con una base y modulo no trivial. inlui un pseudo codigo o codigo real de como se general las colisiones.
+
+==== Apendice: Solucion ABC 481 F ==============================================
+
+
+https://atcoder.jp/contests/abc481/tasks/abc481_f
+
+Te dan un grafo de N nodos y M aristas dirigidas, con digitos en cada
+arista.
+
+Llamamos costo de un camino a la concatenacion de los digitos de las aristas,
+interpretado como numero.
+
+Encontrar los costos para ir del nodo 1 a cada nodo, todos expresados en modulo
+998244353.
+
+Observaciones:
+
+- un camino mas largo en aristas siempre tiene mayor costo
+- entre caminos de igual cantidad de aristas el orden es lexicografico
+
+Primero calculamos distancias a cada nodo con un BFS.
+
+Despues, podemos construir IDs para las strings correspondientes a caminos de
+longitud k, "concatenando" los IDs de caminos de longitud k-1 con el digito
+extra que se agrega al cruzar una arista.
+
+Un poco mas de detalle:
+
+Si ya tenemos los caminos minimos de longitud k-1, podemos construir varios
+caminos de longitud k, extendiendolos con una arista. Entre estos sin dudas se
+encuentran todos los caminos minimos de longitud k, pero puede haber otros (o
+sea a cada nodo a distancia k puede llegar mas de un camino). Simplemente
+tomamos el minimo. Una vez hecho eso, comprimimos.
+
+> agente: el codigo de abajo no es necesario replicar exactamente en la presentacion. el objetivo es dejar clara la idea.
+
+    vector<vector<int>> by_distance;
+    vector<int> distance;
+    // ^^ iniciado por un BFS
+
+    vector<int> cost(n);
+    vector<int> compressed(n);
+    vector<pii> path_to(n, {inf, inf});
+
+    cost[0] = 0;
+    compressed[0] = 0;
+    
+    forr(k, 1, n) {
+
+        auto& prev = by_distance[k-1];
+        auto& curr = by_distance[k];
+
+        for (int u : prev) {
+            for (auto [v, d] : g[u]) if (distance[v] == k) {
+                pii path = {compressed[u], d};
+                if (path < path_to[v]) {
+                    path_to[v] = path;
+                    cost[v] = add(mul(cost[u], 10), d);
+                }
+            }
+        }
+
+        vector<pii> items(sz(curr));
+        forn(i, sz(curr)) {
+            int v = curr[i];
+            items[i] = path_to[v];
+        }
+
+        vector<int> compressed_items = compress(all(items));
+        forn(i, sz(curr)) {
+            int v = curr[i];
+            compressed[v] = compressed_items[i];
+        }
+    }
