@@ -41,3 +41,60 @@
       {\footnotesize \url{https://codeforces.com/gym/104686/problem/F}}
   \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]{Problemas}
+  \begin{itemize}
+    \item \textbf{OIA 2022, Curry o Curro.}
+      Un diccionario de palabras, cada una con un significado entero.
+      Sumar, sobre los pares del mismo largo que difieren en exactamente una letra, la diferencia absoluta de sus significados.
+
+      {\footnotesize \url{https://juez.oia.unsam.edu.ar/#/task/curry/statement}}
+
+    \item \textbf{ABC 250 E.}
+      Dos arreglos \(A\) y \(B\).
+      Para cada consulta \((x, y)\), decir si el conjunto de valores del prefijo de \(A\) de largo \(x\) es igual al del prefijo de \(B\) de largo \(y\).
+
+      {\footnotesize \url{https://atcoder.jp/contests/abc250/tasks/abc250_e}}
+
+    \item \textbf{Codeforces 1622 F.}
+      Un conjunto es cuadrático si el producto de los factoriales de sus elementos es un cuadrado perfecto.
+      Dado \(n\), encontrar un subconjunto cuadrático de \(\{1,\ldots,n\}\) de tamaño máximo.
+
+      {\footnotesize \url{https://codeforces.com/contest/1622/problem/F}}
+
+    \item \textbf{Codeforces 1175 F.}
+      Un subarreglo es una subpermutación si contiene cada entero desde \(1\) hasta su largo, exactamente una vez.
+      Contar cuántas hay.
+
+      {\footnotesize \url{https://codeforces.com/problemset/problem/1175/F}}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Problemas}
+  \begin{itemize}
+    \item \textbf{Codeforces 763 D.}
+      Un árbol.
+      Elegir una raíz que maximice la cantidad de subárboles distintos, salvo isomorfismo.
+      Alcanza con devolver cualquier raíz óptima.
+
+      {\footnotesize \url{https://codeforces.com/contest/763/problem/D}}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Material adicional}
+  \begin{itemize}
+    \item \textbf{XOR hashing.}
+      Tutorial.
+      A cada valor se le asigna un número aleatorio, y el XOR reemplaza al conjunto.
+      Con eso se puede chequear si un subarreglo es una permutación.
+
+      {\footnotesize \url{https://codeforces.com/blog/entry/85900}}
+
+    \item \textbf{Probabilidad de colisiones.}
+      El comentario acota la probabilidad de un falso positivo al chequear una permutación con el XOR de hashes aleatorios de \(B\) bits.
+      Esa probabilidad es \(2^{-B}\).
+      Con \(B = 64\), es menor que \(10^{-19}\).
+
+      {\footnotesize \url{https://codeforces.com/blog/entry/121682?#comment-1080263}}
+  \end{itemize}
+\end{frame}
